@@ -4,17 +4,17 @@
     "version": "1.0",
     "description": "Forces YouTube videos to always open in theater mode.",
     "permissions": [
-        "scripting",
-        "tabs"
+        "scripting"
     ],
     "content_scripts": [
         {
             "matches": [
-                "*://www.youtube.com/watch*"
+                "*://www.youtube.com/*"
             ],
             "js": [
                 "content.js"
-            ]
+            ],
+            "run_at": "document_idle"
         }
     ]
 }
