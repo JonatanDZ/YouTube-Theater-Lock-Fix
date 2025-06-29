@@ -1,35 +1,20 @@
-function setTheaterMode(force = true) {
-    const player = document.querySelector('ytd-watch-flexy');
+// Set 'wide=1' cookie to enforce theater mode
+function forceTheaterCookie() {
+    const domain = ".youtube.com";
+    const path = "/";
+    const expires = new Date();
+    expires.setFullYear(expires.getFullYear() + 1); // 1 year from now
 
-    if (player && typeof player.theaterModeChanged === 'function') {
-        const isInTheaterMode = player.getAttribute('theater') !== null;
+    const cookieString = `wide=1; domain=${domain}; path=${path}; expires=${expires.toUTCString()}; SameSite=Lax`;
+    document.cookie = cookieString;
 
-        if (force && !isInTheaterMode) {
-            console.log("🎬 Setting YouTube to theater mode (API)");
-            player.theaterModeChanged(true);
-        }
-    } else {
-        console.log("⏳ Waiting for YouTube player element...");
-        setTimeout(() => setTheaterMode(force), 500);
-    }
+    console.log("🍪 Set cookie:", cookieString);
 }
 
-// Watch for SPA navigation
-let lastUrl = location.href;
-
-new MutationObserver(() => {
-    const currentUrl = location.href;
-    if (currentUrl !== lastUrl && currentUrl.includes("/watch")) {
-        lastUrl = currentUrl;
-        console.log("🔄 New video detected:", currentUrl);
-        setTimeout(() => setTheaterMode(true), 1000);
-    }
-}).observe(document, { subtree: true, childList: true });
-
-// First load
+// Listen on page load
 window.addEventListener("load", () => {
-    if (location.href.includes("/watch")) {
-        console.log("🚀 YouTube Theater Extension active (API version)");
-        setTimeout(() => setTheaterMode(true), 1000);
+    if (location.hostname.includes("youtube.com")) {
+        console.log("🚀 Extension loaded: Forcing wide mode via cookie");
+        forceTheaterCookie();
     }
 });
